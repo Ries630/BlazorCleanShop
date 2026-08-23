@@ -29,6 +29,10 @@
 Domain層は他のどのプロジェクトも参照しない。
 各層は独立した `.csproj` プロジェクトとし、プロジェクト参照でコンパイラが依存方向を強制する。
 
+Blazor UI と Minimal APIs は**同一の ASP.NET Core ホスト**で実行する。Blazor
+コンポーネントと API エンドポイントは、それぞれ Application 層を直接呼び出す。
+理由と再評価条件は [ADR-0001](docs/adr/0001-host-blazor-and-minimal-apis-together.md) を参照。
+
 ```
 BlazorCleanShop/
 ├── BlazorCleanShop.sln
@@ -36,11 +40,15 @@ BlazorCleanShop/
 │   ├── BlazorCleanShop.Domain/           # エンティティ, Value Object, リポジトリIF
 │   ├── BlazorCleanShop.Application/      # ユースケース（サービス層）, DTO
 │   ├── BlazorCleanShop.Infrastructure/   # EF Core実装, リポジトリ実装
-│   ├── BlazorCleanShop.Api/              # ASP.NET Core Web API（Minimal APIs）
-│   └── BlazorCleanShop.Web/              # Blazor Web App（UI層、APIを呼び出す）
+│   ├── BlazorCleanShop.Api/              # Minimal API エンドポイント
+│   └── BlazorCleanShop.Web/              # Blazor UI
 └── tests/
     └── BlazorCleanShop.Tests/            # xUnit v3 (MTP v2) + Moq
 ```
+
+どのプロジェクトを実行ホストにするか、`BlazorCleanShop.Api` を独立したプロジェクトとして
+残すか、エンドポイントをどこに配置するかは未決定。同一ホストで実行するという決定と、
+物理的なプロジェクト構成は分けて検討する。
 
 ### プロジェクト参照の方向
 
@@ -48,19 +56,20 @@ BlazorCleanShop/
 Domain        ← 参照なし（完全独立）
 Application   → Domain
 Infrastructure → Domain, Application
-Api           → Application, Infrastructure（DI登録のため）
-Web           → HttpClientでAPIを呼ぶだけ（他プロジェクトへの直接参照は最小）
+Api / Web     → Application
+実行ホスト     → Infrastructure（DI登録のため）
 Tests         → テスト対象のプロジェクトを参照
 ```
 
 ### 通信フロー
 
 ```
-Browser → SignalR → Blazor Component → HttpClient → API → Application Service → Domain
+Browser → SignalR → Blazor Component → Application Service → Domain
+外部クライアント → HTTP → Minimal API → Application Service → Domain
 ```
 
-Blazor ServerはServiceを直接DIせず、HttpClient経由でAPI層を呼び出す。
-これによりAPI層が単一のエントリーポイントとなり、将来のモバイル対応等にも対応可能。
+Blazor Component と Minimal API は同一プロセス内の独立した入力アダプターとする。
+Blazor から同じホストの API へ自己 HTTP 通信は行わない。
 
 ## 採用するデザインパターン
 
@@ -113,19 +122,19 @@ Blazor ServerはServiceを直接DIせず、HttpClient経由でAPI層を呼び出
 - **DbContext**: EF Core の `AppDbContext`
 - **マッピング設定**: Entity ↔ DB テーブルの設定
 
-### Api層（BlazorCleanShop.Api）
+### Minimal API
 
 - **Minimal APIs**: エンドポイント定義（.NET 10 推奨スタイル）
 - Application層のServiceをDIで受け取り、HTTPリクエストを橋渡しする
 - **API仕様**: Microsoft.AspNetCore.OpenApi + Scalar でOpenAPIドキュメントを自動生成
 - XMLドキュメントコメントがそのままAPI仕様書に反映される
+- エンドポイントを配置するプロジェクトは未決定
 
 ### Web層（BlazorCleanShop.Web）
 
 - Blazor Web App（Interactive Server モード）
 - 空テンプレート（`-e`）から作成、デフォルトの Bootstrap は使用しない
-- HttpClient経由でAPI層を呼び出す（Serviceを直接DIしない）
-- DI登録（Program.cs）
+- Blazor ComponentはApplication層のServiceを直接DIする
 
 ## UI方針
 
@@ -175,8 +184,8 @@ Blazor ServerはServiceを直接DIせず、HttpClient経由でAPI層を呼び出
 
 ## 実装の分担・ツール活用
 
-- **自分で実装する**: Domain層、Application層、Infrastructure層、Api層、Tests
-- **Claudeにお任せする**: Web層（Blazor UI）— UI層にはさほど興味がないため
+- **自分で実装する**: Domain層、Application層、Infrastructure層、Minimal APIエンドポイント、Tests
+- **Claudeにお任せする**: Blazor UI — UI層にはさほど興味がないため
 - Claudeへの依頼時は、既存のアーキテクチャ・命名規則・コメント方針に従うこと
 - **GitHub Copilot（無料版）**: コード補完・テストコード生成など日常的に活用する
 
