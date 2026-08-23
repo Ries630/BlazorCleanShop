@@ -13,8 +13,7 @@ Razor Component、Blazor の状態更新、CSS Isolation など、Blazor 本来�
 
 UI の選択肢として、テンプレート標準の Bootstrap、MudBlazor、Radzen、Blazorise、
 Fluent UI Blazor などの Blazor 用コンポーネントライブラリ、Tailwind CSS と daisyUI の
-直接利用を比較した。また、WPF や MAUI で利用経験のある CommunityToolkit.Mvvm と、
-Microsoft 公式の QuickGrid についても検討した。
+直接利用を比較した。また、Microsoft 公式の QuickGrid についても検討した。
 
 ## 決定
 
@@ -22,8 +21,7 @@ Blazor Web App は空テンプレートから開始し、Bootstrap は使用し�
 Tailwind CSS と daisyUI を直接使用し、Razor Component と CSS Isolation を維持する。
 一覧表示には Microsoft 公式の QuickGrid を使用する。
 
-MudBlazor などの包括的な Blazor UI ライブラリ、CommunityToolkit.Mvvm、Blazing.Mvvm
-などの MVVM レイヤーは導入しない。
+MudBlazor などの包括的な Blazor UI ライブラリは導入しない。
 
 ## 検討した代替
 
@@ -36,11 +34,6 @@ MudBlazor などの包括的な Blazor UI ライブラリ、CommunityToolkit.Mvv
 
 Blazor 向けの高機能なコンポーネントを利用できる。しかし、ライブラリ固有のコンポーネント
 モデルを学ぶ範囲が増え、標準の Razor と HTML クラスを中心にする方針から外れるため採用しない。
-
-### CommunityToolkit.Mvvm または Blazing.Mvvm を使う
-
-WPF や MAUI に近い MVVM の記述ができる。しかし、Blazor はコンポーネントの再レンダリングを
-基本とし、MVVM Toolkit が解決する変更通知の問題を同じ形では持たないため採用しない。
 
 ### Blazor.DaisyUI のラッパーを使う
 

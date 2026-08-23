@@ -145,7 +145,7 @@ Blazor から同じホストの API へ自己 HTTP 通信は行わない。
   - 商品一覧・注文一覧等のテーブル表示に使用
   - daisyUIのクラスを `RowClass` 等で併用可
 - Blazor本来の開発体験（Razorコンポーネント、CSS Isolation等）を重視しつつ、スタイリングにdaisyUIを活用
-- Blazor専用UIライブラリ（MudBlazor等）やCommunityToolkit.Mvvmは採用しない
+- Blazor専用UIライブラリ（MudBlazor等）は採用しない
 - コンポーネント固有のスタイルは `.razor.css`（CSS Isolation）を併用可
 - .NET 10 / Blazor の新機能は積極的に採用する
   - `[PersistentState]` による状態永続化
