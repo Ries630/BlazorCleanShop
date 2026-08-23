@@ -28,6 +28,8 @@
 依存の方向は常に **外 → 内**（Web → Application → Domain）。
 Domain層は他のどのプロジェクトも参照しない。
 各層は独立した `.csproj` プロジェクトとし、プロジェクト参照でコンパイラが依存方向を強制する。
+軽量 DDD の採用範囲とプロジェクト分割の理由は
+[ADR-0002](docs/adr/0002-use-clean-architecture-with-lightweight-ddd.md) を参照。
 
 Blazor UI と Minimal APIs は**同一の ASP.NET Core ホスト**で実行する。Blazor
 コンポーネントと API エンドポイントは、それぞれ Application 層を直接呼び出す。
@@ -86,8 +88,8 @@ Blazor から同じホストの API へ自己 HTTP 通信は行わない。
 - Domain Events
 - Specification パターン
 
-これらは小規模アプリでは学習コスト対リターンが薄いため除外。
-必要になった時点で段階的に導入を検討する。
+これらは現時点では採用しない。判断の理由と再評価条件は
+[ADR-0002](docs/adr/0002-use-clean-architecture-with-lightweight-ddd.md) を参照。
 
 ## 想定機能スコープ
 
@@ -143,12 +145,15 @@ Blazor から同じホストの API へ自己 HTTP 通信は行わない。
   - 商品一覧・注文一覧等のテーブル表示に使用
   - daisyUIのクラスを `RowClass` 等で併用可
 - Blazor本来の開発体験（Razorコンポーネント、CSS Isolation等）を重視しつつ、スタイリングにdaisyUIを活用
-- Blazor専用UIライブラリ（MudBlazor等）やCommunityToolkit.Mvvmは採用しない
+- Blazor専用UIライブラリ（MudBlazor等）は採用しない
 - コンポーネント固有のスタイルは `.razor.css`（CSS Isolation）を併用可
 - .NET 10 / Blazor の新機能は積極的に採用する
   - `[PersistentState]` による状態永続化
   - `NavigationManager.NotFound()` による404ハンドリング
   - QuickGrid の `RowClass`、`HideColumnOptionsAsync()` 等
+
+UI 技術の選択と不採用案は
+[ADR-0006](docs/adr/0006-use-native-blazor-with-daisyui-and-quickgrid.md) を参照。
 
 ## コメント・ドキュメント方針
 
@@ -166,6 +171,9 @@ Blazor から同じホストの API へ自己 HTTP 通信は行わない。
 - **APIドキュメントUI**: Scalar（.NET 10推奨、Swashbuckle後継）
 - エンドポイントのXMLドキュメントコメントが仕様書に反映されるため、コメントを丁寧に書く
 
+API 実装・仕様生成・ドキュメント UI の選択は
+[ADR-0003](docs/adr/0003-use-minimal-apis-with-openapi-and-scalar.md) を参照。
+
 ## テスト方針
 
 - **テストフレームワーク**: xUnit v3 (パッケージ: `xunit.v3.mtp-v2`)
@@ -174,6 +182,9 @@ Blazor から同じホストの API へ自己 HTTP 通信は行わない。
 - **テスト実行**: `dotnet test`（MTPモード）または `dotnet run` で直接実行
 - テストプロジェクトの `OutputType` は `Exe`（MTP要件）
 - Domain層・Application層のユニットテストを重点的に書く
+
+テスト実行基盤の選択理由と再評価条件は
+[ADR-0004](docs/adr/0004-use-xunit-v3-with-mtp-v2.md) を参照。
 
 ## コーディング方針
 
@@ -200,6 +211,8 @@ Blazor から同じホストの API へ自己 HTTP 通信は行わない。
 
 将来的に外部API連携・マイクロバッチ（ファイル連携）を追加予定。
 現時点でプロジェクトは作らないが、以下を意識して設計する。
+トランスポート非依存を保つ判断は
+[ADR-0005](docs/adr/0005-keep-application-services-transport-independent.md) を参照。
 
 ### 設計上の原則
 

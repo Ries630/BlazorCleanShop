@@ -38,6 +38,11 @@
 | # | 決定 | ステータス |
 |---|---|---|
 | [0001](0001-host-blazor-and-minimal-apis-together.md) | Blazor UI と Minimal APIs を同一 ASP.NET Core ホストで実行する | 承認済み |
+| [0002](0002-use-clean-architecture-with-lightweight-ddd.md) | クリーンアーキテクチャと軽量 DDD を採用する | 承認済み |
+| [0003](0003-use-minimal-apis-with-openapi-and-scalar.md) | Minimal APIs と OpenAPI、Scalar を採用する | 承認済み |
+| [0004](0004-use-xunit-v3-with-mtp-v2.md) | .NET 10 と xUnit v3、Microsoft Testing Platform v2 を採用する | 承認済み |
+| [0005](0005-keep-application-services-transport-independent.md) | Application Service をトランスポート非依存に保つ | 承認済み |
+| [0006](0006-use-native-blazor-with-daisyui-and-quickgrid.md) | Blazor 標準コンポーネントに daisyUI と QuickGrid を組み合わせる | 承認済み |
 
 ## テンプレート
 
