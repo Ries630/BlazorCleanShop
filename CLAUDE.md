@@ -29,6 +29,10 @@
 Domain層は他のどのプロジェクトも参照しない。
 各層は独立した `.csproj` プロジェクトとし、プロジェクト参照でコンパイラが依存方向を強制する。
 
+Blazor UI と Minimal APIs は**同一の ASP.NET Core ホスト**で実行する。Blazor
+コンポーネントと API エンドポイントは、それぞれ Application 層を直接呼び出す。
+理由と再評価条件は [ADR-0001](docs/adr/0001-host-blazor-and-minimal-apis-together.md) を参照。
+
 ```
 BlazorCleanShop/
 ├── BlazorCleanShop.sln
@@ -36,11 +40,13 @@ BlazorCleanShop/
 │   ├── BlazorCleanShop.Domain/           # エンティティ, Value Object, リポジトリIF
 │   ├── BlazorCleanShop.Application/      # ユースケース（サービス層）, DTO
 │   ├── BlazorCleanShop.Infrastructure/   # EF Core実装, リポジトリ実装
-│   ├── BlazorCleanShop.Api/              # ASP.NET Core Web API（Minimal APIs）
-│   └── BlazorCleanShop.Web/              # Blazor Web App（UI層、APIを呼び出す）
+│   └── BlazorCleanShop.Web/              # ASP.NET Coreホスト（Blazor UI + Minimal APIs）
 └── tests/
     └── BlazorCleanShop.Tests/            # xUnit v3 (MTP v2) + Moq
 ```
+
+既存の `BlazorCleanShop.Api` プロジェクトは、同一ホスト構成の実装時に
+`BlazorCleanShop.Web` へ統合する。
 
 ### プロジェクト参照の方向
 
@@ -48,19 +54,19 @@ BlazorCleanShop/
 Domain        ← 参照なし（完全独立）
 Application   → Domain
 Infrastructure → Domain, Application
-Api           → Application, Infrastructure（DI登録のため）
-Web           → HttpClientでAPIを呼ぶだけ（他プロジェクトへの直接参照は最小）
+Web           → Application, Infrastructure（実行ホスト・DI登録のため）
 Tests         → テスト対象のプロジェクトを参照
 ```
 
 ### 通信フロー
 
 ```
-Browser → SignalR → Blazor Component → HttpClient → API → Application Service → Domain
+Browser → SignalR → Blazor Component → Application Service → Domain
+外部クライアント → HTTP → Minimal API → Application Service → Domain
 ```
 
-Blazor ServerはServiceを直接DIせず、HttpClient経由でAPI層を呼び出す。
-これによりAPI層が単一のエントリーポイントとなり、将来のモバイル対応等にも対応可能。
+Blazor Component と Minimal API は同一プロセス内の独立した入力アダプターとする。
+Blazor から同じホストの API へ自己 HTTP 通信は行わない。
 
 ## 採用するデザインパターン
 
@@ -113,7 +119,7 @@ Blazor ServerはServiceを直接DIせず、HttpClient経由でAPI層を呼び出
 - **DbContext**: EF Core の `AppDbContext`
 - **マッピング設定**: Entity ↔ DB テーブルの設定
 
-### Api層（BlazorCleanShop.Api）
+### Minimal API（BlazorCleanShop.Web）
 
 - **Minimal APIs**: エンドポイント定義（.NET 10 推奨スタイル）
 - Application層のServiceをDIで受け取り、HTTPリクエストを橋渡しする
@@ -123,8 +129,9 @@ Blazor ServerはServiceを直接DIせず、HttpClient経由でAPI層を呼び出
 ### Web層（BlazorCleanShop.Web）
 
 - Blazor Web App（Interactive Server モード）
+- Blazor UI と Minimal APIs を実行する単一の ASP.NET Core ホスト
 - 空テンプレート（`-e`）から作成、デフォルトの Bootstrap は使用しない
-- HttpClient経由でAPI層を呼び出す（Serviceを直接DIしない）
+- Blazor ComponentはApplication層のServiceを直接DIする
 - DI登録（Program.cs）
 
 ## UI方針
