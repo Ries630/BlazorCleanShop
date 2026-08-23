@@ -2,7 +2,7 @@
 
 このプロジェクトの設計判断を、判断した時点の記録として残す場所。
 
-自動で読み込まれる文書（CLAUDE.md）には**結論**だけを置く。そこに無いと同じ提案が
+自動で読み込まれる文書（AGENTS.md）には**結論**だけを置く。そこに無いと同じ提案が
 蒸し返される。一方で**理由・却下した代替・その時点の測定値**は必要になったときに
 読めればよく、しかも後から上書きされては困る。この 2 つを分けるのが ADR の役目。
 
@@ -43,7 +43,8 @@
 | [0004](0004-use-xunit-v3-with-mtp-v2.md) | .NET 10 と xUnit v3、Microsoft Testing Platform v2 を採用する | 承認済み |
 | [0005](0005-keep-application-services-transport-independent.md) | Application Service をトランスポート非依存に保つ | 承認済み |
 | [0006](0006-use-native-blazor-with-daisyui-and-quickgrid.md) | Blazor 標準コンポーネントに daisyUI と QuickGrid を組み合わせる | 承認済み |
+| [0007](0007-use-agents-md-as-canonical-instructions.md) | プロジェクト指示の正を AGENTS.md に置く | 承認済み |
 
 ## テンプレート
 
-[`template.md`](template.md) をコピーして使う。作成・更新は `/adr` skill から。
+[`template.md`](template.md) をコピーして使う。作成・更新は `adr` skill から。
