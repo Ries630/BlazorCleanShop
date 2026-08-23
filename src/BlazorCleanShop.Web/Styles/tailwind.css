@@ -1,0 +1,5 @@
+@import "tailwindcss" source(none) prefix(tw);
+@source "../Components";
+@plugin "daisyui" {
+  prefix: "d-";
+}
