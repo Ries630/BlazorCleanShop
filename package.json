@@ -1,0 +1,14 @@
+{
+  "name": "blazor-clean-shop",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "css:build": "tailwindcss -i ./src/BlazorCleanShop.Web/Styles/tailwind.css -o ./src/BlazorCleanShop.Web/wwwroot/tailwind.generated.css --minify",
+    "css:watch": "tailwindcss -i ./src/BlazorCleanShop.Web/Styles/tailwind.css -o ./src/BlazorCleanShop.Web/wwwroot/tailwind.generated.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.3",
+    "daisyui": "5.7.20",
+    "tailwindcss": "4.3.3"
+  }
+}
