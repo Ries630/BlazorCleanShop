@@ -40,13 +40,15 @@ BlazorCleanShop/
 │   ├── BlazorCleanShop.Domain/           # エンティティ, Value Object, リポジトリIF
 │   ├── BlazorCleanShop.Application/      # ユースケース（サービス層）, DTO
 │   ├── BlazorCleanShop.Infrastructure/   # EF Core実装, リポジトリ実装
-│   └── BlazorCleanShop.Web/              # ASP.NET Coreホスト（Blazor UI + Minimal APIs）
+│   ├── BlazorCleanShop.Api/              # Minimal API エンドポイント
+│   └── BlazorCleanShop.Web/              # Blazor UI
 └── tests/
     └── BlazorCleanShop.Tests/            # xUnit v3 (MTP v2) + Moq
 ```
 
-既存の `BlazorCleanShop.Api` プロジェクトは、同一ホスト構成の実装時に
-`BlazorCleanShop.Web` へ統合する。
+どのプロジェクトを実行ホストにするか、`BlazorCleanShop.Api` を独立したプロジェクトとして
+残すか、エンドポイントをどこに配置するかは未決定。同一ホストで実行するという決定と、
+物理的なプロジェクト構成は分けて検討する。
 
 ### プロジェクト参照の方向
 
@@ -54,7 +56,8 @@ BlazorCleanShop/
 Domain        ← 参照なし（完全独立）
 Application   → Domain
 Infrastructure → Domain, Application
-Web           → Application, Infrastructure（実行ホスト・DI登録のため）
+Api / Web     → Application
+実行ホスト     → Infrastructure（DI登録のため）
 Tests         → テスト対象のプロジェクトを参照
 ```
 
@@ -119,20 +122,19 @@ Blazor から同じホストの API へ自己 HTTP 通信は行わない。
 - **DbContext**: EF Core の `AppDbContext`
 - **マッピング設定**: Entity ↔ DB テーブルの設定
 
-### Minimal API（BlazorCleanShop.Web）
+### Minimal API
 
 - **Minimal APIs**: エンドポイント定義（.NET 10 推奨スタイル）
 - Application層のServiceをDIで受け取り、HTTPリクエストを橋渡しする
 - **API仕様**: Microsoft.AspNetCore.OpenApi + Scalar でOpenAPIドキュメントを自動生成
 - XMLドキュメントコメントがそのままAPI仕様書に反映される
+- エンドポイントを配置するプロジェクトは未決定
 
 ### Web層（BlazorCleanShop.Web）
 
 - Blazor Web App（Interactive Server モード）
-- Blazor UI と Minimal APIs を実行する単一の ASP.NET Core ホスト
 - 空テンプレート（`-e`）から作成、デフォルトの Bootstrap は使用しない
 - Blazor ComponentはApplication層のServiceを直接DIする
-- DI登録（Program.cs）
 
 ## UI方針
 
@@ -182,8 +184,8 @@ Blazor から同じホストの API へ自己 HTTP 通信は行わない。
 
 ## 実装の分担・ツール活用
 
-- **自分で実装する**: Domain層、Application層、Infrastructure層、Api層、Tests
-- **Claudeにお任せする**: Web層（Blazor UI）— UI層にはさほど興味がないため
+- **自分で実装する**: Domain層、Application層、Infrastructure層、Minimal APIエンドポイント、Tests
+- **Claudeにお任せする**: Blazor UI — UI層にはさほど興味がないため
 - Claudeへの依頼時は、既存のアーキテクチャ・命名規則・コメント方針に従うこと
 - **GitHub Copilot（無料版）**: コード補完・テストコード生成など日常的に活用する
 

@@ -27,6 +27,10 @@ Application 層を直接呼び出す入力アダプターとする。
 Minimal APIs による API 設計と OpenAPI ドキュメントの学習は継続する。Blazor UI から
 同じプロセスの API へ自己 HTTP 通信は行わない。
 
+どのプロジェクトを実行ホストにするか、既存の `BlazorCleanShop.Api` を独立した
+プロジェクトとして残すか、Minimal API エンドポイントをどこに配置するかは、
+この ADR では決定しない。
+
 ## 検討した代替
 
 ### Blazor Interactive Server と Minimal API を別プロセスにする
