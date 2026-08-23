@@ -1,7 +1,8 @@
 # ADR-0005: Application Service をトランスポート非依存に保つ
 
 - ステータス: 承認済み
-- 日付: 2026-04-01
+- 判断日: 2026-04-01
+- 記録日: 2026-08-23
 - 関連: [Issue #3](https://github.com/Ries630/BlazorCleanShop/issues/3)、[当初の設計会話](https://claude.ai/share/081f3e76-b272-49f4-9f1c-de15f8b0b5d4)
 
 ## 背景
@@ -19,8 +20,8 @@ Blazor UI、HTTP API、バッチのどの入口からも同じビジネスロジ
 Application Service の引数と戻り値には DTO、Command、値を使用し、`HttpRequest` や
 `IResult` など特定のトランスポートの型へ依存させない。
 
-ファイル出力や外部 API クライアントなどの I/O インターフェースは、その役割に応じて
-Domain 層または Application 層に置き、実装は Infrastructure 層に置く。Batch や
+ファイル出力や外部 API クライアントなど、ユースケースが必要とする外部 I/O の
+インターフェースは Application 層に置き、実装は Infrastructure 層に置く。Batch や
 ExternalApi などの新しい入口は、具体的な機能が必要になった時点で別プロジェクトとして追加する。
 
 ## 検討した代替
@@ -50,4 +51,4 @@ Minimal API からは値をそのまま受け渡しやすくなる。しかし�
 - 今後も入口が一種類だけであり、トランスポート非依存の境界が継続的な負担になった
 - 外部連携またはバッチの具体的な要件が決まり、新しいプロジェクトを作成する時点になった
 - トランスポート固有の制約がユースケースの成立条件そのものになった
-- Domain 層と Application 層のどちらに I/O インターフェースを置くか判断できない事例が増えた
+- 外部 I/O の抽象と Domain 層のビジネスルールを分離できない事例が増えた

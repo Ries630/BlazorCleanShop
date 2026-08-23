@@ -1,7 +1,8 @@
 # ADR-0006: Blazor 標準コンポーネントに daisyUI と QuickGrid を組み合わせる
 
 - ステータス: 承認済み
-- 日付: 2026-04-02
+- 判断日: 2026-04-02
+- 記録日: 2026-08-23
 - 関連: [Issue #3](https://github.com/Ries630/BlazorCleanShop/issues/3)、[当初の設計会話](https://claude.ai/share/081f3e76-b272-49f4-9f1c-de15f8b0b5d4)
 
 ## 背景

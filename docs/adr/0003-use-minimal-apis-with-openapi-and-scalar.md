@@ -1,7 +1,8 @@
 # ADR-0003: Minimal APIs と OpenAPI、Scalar を採用する
 
 - ステータス: 承認済み
-- 日付: 2026-03-29
+- 判断日: 2026-03-29
+- 記録日: 2026-08-23
 - 関連: [Issue #3](https://github.com/Ries630/BlazorCleanShop/issues/3)、[ADR-0001](0001-host-blazor-and-minimal-apis-together.md)、[当初の設計会話](https://claude.ai/share/081f3e76-b272-49f4-9f1c-de15f8b0b5d4)
 
 ## 背景
@@ -10,6 +11,11 @@ API 設計はこのプロジェクトの主な学習目的である。Blazor Int
 Application Service を直接呼び出せるため、Web UI の実装だけなら HTTP API は必須ではない。
 一方で、API 設計そのものの学習、将来の外部クライアント、Blazor WebAssembly への変更が
 API を設ける理由として挙がっていた。
+
+判断時点では、Blazor Web と API を別プロセスとし、Blazor から `HttpClient` で API を
+呼び出す構成を想定していた。この実行構成は、2026-08-23に
+[ADR-0001](0001-host-blazor-and-minimal-apis-together.md) で変更された。この ADR は当初の
+実行構成を現在の構成で上書きせず、その前後で変わらない API 技術の選択を記録する。
 
 API ドキュメントについては、Apidog と ASP.NET Core に統合される OpenAPI 生成を比較した。
 Apidog はテストクライアントとドキュメントを一体化できるが、コードから生成する OpenAPI
@@ -21,9 +27,6 @@ Apidog はテストクライアントとドキュメントを一体化できる�
 HTTP API は Controller ではなく Minimal APIs で実装する。OpenAPI 仕様は
 `Microsoft.AspNetCore.OpenApi` でコードから生成し、ドキュメント UI には Scalar を使う。
 Apidog は仕様の正として導入しない。
-
-API と Blazor UI の実行ホストに関する判断は [ADR-0001](0001-host-blazor-and-minimal-apis-together.md)
-に従う。Minimal API エンドポイントを配置する物理プロジェクトは、この ADR では決定しない。
 
 ## 検討した代替
 
@@ -52,9 +55,14 @@ API テストとドキュメントを一つのツールで扱える。しかし�
 - Controller、Action、Controller 固有の規約やフィルターを前提にした実装はできない
 - Apidog が提供する設計・テスト・ドキュメントの統合機能は標準の作業手順に含まれない
 - OpenAPI の内容は、エンドポイントのメタデータと XML ドキュメントコメントの品質に依存する
-- Blazor UI は Minimal API を経由しないため、UI 操作だけでは API 契約を検証できない
 - 別の API 方式やドキュメント UI に変更する場合、エンドポイント定義、メタデータ、
   パッケージと公開設定の変更が必要になる
+
+## 後続の判断
+
+2026-08-23の [ADR-0001](0001-host-blazor-and-minimal-apis-together.md) により、Blazor UI と
+Minimal APIs は同一ホストで実行し、Blazor Component は Application Service を直接
+呼び出す構成へ変更した。Minimal APIs、OpenAPI、Scalar の採用は継続する。
 
 ## 再評価のサイン
 
