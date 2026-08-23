@@ -204,7 +204,6 @@ API 実装・仕様生成・ドキュメント UI の選択は
 - **自分で実装する**: Domain層、Application層、Infrastructure層、Minimal APIエンドポイント、Tests
 - **コーディングエージェントに任せる**: Blazor UI — UI層にはさほど興味がないため
 - エージェントへの依頼時は、既存のアーキテクチャ・命名規則・コメント方針に従うこと
-- **GitHub Copilot（無料版）**: コード補完・テストコード生成など日常的に活用する
 
 ## GitHub運用方針
 
