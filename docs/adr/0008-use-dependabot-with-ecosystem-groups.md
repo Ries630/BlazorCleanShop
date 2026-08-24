@@ -1,6 +1,6 @@
 # ADR-0008: 依存更新に Dependabot を採用しエコシステムごとに集約する
 
-- ステータス: 承認済み
+- ステータス: 廃止（ADR-0009 により置換）
 - 日付: 2026-08-24
 - 関連: [Issue #14](https://github.com/Ries630/BlazorCleanShop/issues/14)
 

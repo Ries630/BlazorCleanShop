@@ -31,9 +31,10 @@
 
 ## 依存関係の更新
 
-依存更新には Dependabot を使用し、NuGet と npm を別々の PR にする。通常更新ルールの正は
+依存更新には Dependabot を使用し、NuGet と npm を別々の PR にする。minor・patch 更新は
+エコシステムごとの月次 PR に集約し、major 更新は個別 PR にする。通常更新ルールの正は
 `.github/dependabot.yml` とし、自動マージは行わない。理由と再評価条件は
-[ADR-0008](docs/adr/0008-use-dependabot-with-ecosystem-groups.md) を参照。
+[ADR-0009](docs/adr/0009-separate-major-dependency-updates.md) を参照。
 
 ## アーキテクチャ: クリーンアーキテクチャ
 
