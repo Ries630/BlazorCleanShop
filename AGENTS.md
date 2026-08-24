@@ -29,6 +29,12 @@
 - **テスト**: xUnit v3 (`xunit.v3.mtp-v2`) + Moq — Microsoft Testing Platform v2
 - **API仕様**: Microsoft.AspNetCore.OpenApi + Scalar
 
+## 依存関係の更新
+
+依存更新には Dependabot を使用し、NuGet と npm を別々の PR にする。通常更新ルールの正は
+`.github/dependabot.yml` とし、自動マージは行わない。理由と再評価条件は
+[ADR-0008](docs/adr/0008-use-dependabot-with-ecosystem-groups.md) を参照。
+
 ## アーキテクチャ: クリーンアーキテクチャ
 
 依存の方向は常に **外 → 内**（Web → Application → Domain）。

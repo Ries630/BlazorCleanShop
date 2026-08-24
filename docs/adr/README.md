@@ -44,6 +44,7 @@
 | [0005](0005-keep-application-services-transport-independent.md) | Application Service をトランスポート非依存に保つ | 承認済み |
 | [0006](0006-use-native-blazor-with-daisyui-and-quickgrid.md) | Blazor 標準コンポーネントに daisyUI と QuickGrid を組み合わせる | 承認済み |
 | [0007](0007-use-agents-md-as-canonical-instructions.md) | プロジェクト指示の正を AGENTS.md に置く | 承認済み |
+| [0008](0008-use-dependabot-with-ecosystem-groups.md) | 依存更新に Dependabot を採用しエコシステムごとに集約する | 承認済み |
 
 ## テンプレート
 
