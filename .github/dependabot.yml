@@ -1,0 +1,32 @@
+version: 2
+
+updates:
+  - package-ecosystem: "nuget"
+    directories:
+      - "/src/*"
+      - "/tests/*"
+    schedule:
+      interval: "monthly"
+    assignees:
+      - "Ries630"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      nuget-dependencies:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    assignees:
+      - "Ries630"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      npm-dependencies:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
