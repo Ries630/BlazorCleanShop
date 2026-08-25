@@ -1,0 +1,21 @@
+@* 商品一覧を実装するまでの間、QuickGridの参照方法と接頭辞付きスタイルをビルドで保証する。 *@
+<div class="tw:overflow-x-auto">
+    <QuickGrid Items="SampleItems" Class="tw:d-table tw:d-table-zebra">
+        <PropertyColumn Property="item => item.Name" Title="商品名" />
+        <PropertyColumn Property="item => item.Price" Title="価格" Format="¥0" />
+    </QuickGrid>
+</div>
+
+@code {
+    private static readonly IQueryable<QuickGridSampleItem> SampleItems = new[]
+    {
+        new QuickGridSampleItem("サンプル商品", 1_000m)
+    }.AsQueryable();
+
+    /// <summary>
+    /// QuickGridの利用例に表示する商品概要を表します。
+    /// </summary>
+    /// <param name="Name">商品名。</param>
+    /// <param name="Price">商品価格。</param>
+    private sealed record QuickGridSampleItem(string Name, decimal Price);
+}
