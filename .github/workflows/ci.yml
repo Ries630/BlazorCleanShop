@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  css:
+    name: CSS build
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v7
+
+      - name: Node.jsをセットアップ
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: npm依存関係を復元
+        run: npm ci
+
+      - name: CSSを生成
+        run: npm run css:build
+
+      - name: 生成CSSが最新であることを確認
+        run: |
+          git diff --exit-code -- src/BlazorCleanShop.Web/wwwroot/tailwind.generated.css
+          git ls-files --error-unmatch -- src/BlazorCleanShop.Web/wwwroot/tailwind.generated.css
+
+  dotnet:
+    name: .NET build and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v7
+
+      - name: .NETをセットアップ
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+          dotnet-quality: ga
+
+      - name: NuGet依存関係を復元
+        run: dotnet restore BlazorCleanShop.sln
+
+      - name: ソリューションをビルド
+        run: dotnet build BlazorCleanShop.sln --configuration Release --no-restore -m:1 -nr:false
+
+      - name: MTP v2でテスト
+        run: dotnet test --project tests/BlazorCleanShop.Tests/BlazorCleanShop.Tests.csproj --configuration Release --no-build --no-restore
