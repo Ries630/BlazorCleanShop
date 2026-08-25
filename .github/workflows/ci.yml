@@ -36,7 +36,9 @@ jobs:
         run: npm run css:build
 
       - name: 生成CSSが最新であることを確認
-        run: git diff --exit-code -- src/BlazorCleanShop.Web/wwwroot/tailwind.generated.css
+        run: |
+          git diff --exit-code -- src/BlazorCleanShop.Web/wwwroot/tailwind.generated.css
+          git ls-files --error-unmatch -- src/BlazorCleanShop.Web/wwwroot/tailwind.generated.css
 
   dotnet:
     name: .NET build and test
