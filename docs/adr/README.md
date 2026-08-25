@@ -47,6 +47,7 @@
 | [0008](0008-use-dependabot-with-ecosystem-groups.md) | 依存更新に Dependabot を採用しエコシステムごとに集約する | 廃止（ADR-0009 により置換） |
 | [0009](0009-separate-major-dependency-updates.md) | major 更新を月次グループから分離する | 承認済み |
 | [0010](0010-use-web-host-with-api-endpoint-library.md) | Web を実行ホストとし Api をエンドポイント定義ライブラリとして残す | 承認済み |
+| [0011](0011-generate-identity-sqlite-locally.md) | Identity 用 SQLite DB をマイグレーションからローカル生成する | 承認済み |
 
 ## テンプレート
 
