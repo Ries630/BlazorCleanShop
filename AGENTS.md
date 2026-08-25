@@ -182,7 +182,7 @@ UI 技術の選択と不採用案は
 
 - **Minimal APIs** スタイルで実装（Controllerベースは採用しない）
 - **OpenAPI仕様**: `Microsoft.AspNetCore.OpenApi` で自動生成
-- **APIドキュメントUI**: Scalar（.NET 10推奨、Swashbuckle後継）
+- **APIドキュメントUI**: Scalar（Swagger UIの代替）
 - エンドポイントのXMLドキュメントコメントが仕様書に反映されるため、コメントを丁寧に書く
 
 API 実装・仕様生成・ドキュメント UI の選択は

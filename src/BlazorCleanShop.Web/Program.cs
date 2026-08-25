@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 using BlazorCleanShop.Api;
 using BlazorCleanShop.Web.Components;
 using BlazorCleanShop.Web.Components.Account;
@@ -47,6 +48,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 else
 {
