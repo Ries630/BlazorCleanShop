@@ -25,7 +25,8 @@
 - **フレームワーク**: ASP.NET Core Blazor Web App
 - **レンダリングモード**: Interactive Server
 - **ORM**: Entity Framework Core 10
-- **DB**: SQLite（開発用）
+- **DB**: SQLite（開発用。Identity DB は Git 管理せず、マイグレーションから
+  ローカル生成する）— [ADR-0011](docs/adr/0011-generate-identity-sqlite-locally.md)
 - **テスト**: xUnit v3 (`xunit.v3.mtp-v2`) + Moq — Microsoft Testing Platform v2
 - **API仕様**: Microsoft.AspNetCore.OpenApi + Scalar
 
