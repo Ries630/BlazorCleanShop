@@ -55,15 +55,16 @@ BlazorCleanShop/
 │   ├── BlazorCleanShop.Domain/           # エンティティ, Value Object, リポジトリIF
 │   ├── BlazorCleanShop.Application/      # ユースケース（サービス層）, DTO
 │   ├── BlazorCleanShop.Infrastructure/   # EF Core実装, リポジトリ実装
-│   ├── BlazorCleanShop.Api/              # Minimal API エンドポイント
-│   └── BlazorCleanShop.Web/              # Blazor UI
+│   ├── BlazorCleanShop.Api/              # Minimal API エンドポイント定義（クラスライブラリ）
+│   └── BlazorCleanShop.Web/              # Blazor UIと唯一の実行ホスト
 └── tests/
     └── BlazorCleanShop.Tests/            # xUnit v3 (MTP v2) + Moq
 ```
 
-どのプロジェクトを実行ホストにするか、`BlazorCleanShop.Api` を独立したプロジェクトとして
-残すか、エンドポイントをどこに配置するかは未決定。同一ホストで実行するという決定と、
-物理的なプロジェクト構成は分けて検討する。
+`BlazorCleanShop.Web` を唯一の実行ホスト兼構成ルートとし、`BlazorCleanShop.Api` は
+Minimal API エンドポイントを定義するクラスライブラリとして残す。実行時の DI、
+ミドルウェア、OpenAPI と Scalar の構成は Web に置く。理由と再評価条件は
+[ADR-0010](docs/adr/0010-use-web-host-with-api-endpoint-library.md) を参照。
 
 ### プロジェクト参照の方向
 
@@ -71,8 +72,8 @@ BlazorCleanShop/
 Domain        ← 参照なし（完全独立）
 Application   → Domain
 Infrastructure → Domain, Application
-Api / Web     → Application
-実行ホスト     → Infrastructure（DI登録のため）
+Api           → Application
+Web（実行ホスト）→ Api, Application, Infrastructure
 Tests         → テスト対象のプロジェクトを参照
 ```
 
@@ -143,7 +144,7 @@ Blazor から同じホストの API へ自己 HTTP 通信は行わない。
 - Application層のServiceをDIで受け取り、HTTPリクエストを橋渡しする
 - **API仕様**: Microsoft.AspNetCore.OpenApi + Scalar でOpenAPIドキュメントを自動生成
 - XMLドキュメントコメントがそのままAPI仕様書に反映される
-- エンドポイントを配置するプロジェクトは未決定
+- エンドポイントは `BlazorCleanShop.Api` に置き、実行時の構成は `BlazorCleanShop.Web` に置く
 
 ### Web層（BlazorCleanShop.Web）
 

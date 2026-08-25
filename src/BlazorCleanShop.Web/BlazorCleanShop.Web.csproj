@@ -15,8 +15,15 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../BlazorCleanShop.Api/BlazorCleanShop.Api.csproj" />
+    <ProjectReference Include="../BlazorCleanShop.Application/BlazorCleanShop.Application.csproj" />
+    <ProjectReference Include="../BlazorCleanShop.Infrastructure/BlazorCleanShop.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

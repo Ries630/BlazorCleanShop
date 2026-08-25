@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using BlazorCleanShop.Api;
 using BlazorCleanShop.Web.Components;
 using BlazorCleanShop.Web.Components.Account;
 using BlazorCleanShop.Web.Data;
@@ -10,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddOpenApi();
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityRedirectManager>();
@@ -44,6 +46,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+    app.MapOpenApi();
 }
 else
 {
@@ -57,6 +60,7 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+app.MapApiEndpoints();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
