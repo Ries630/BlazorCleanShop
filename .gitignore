@@ -278,6 +278,9 @@ ServiceFabricBackup/
 /src/BlazorCleanShop.Web/Data/app.db
 /src/BlazorCleanShop.Web/Data/app.db-shm
 /src/BlazorCleanShop.Web/Data/app.db-wal
+/src/BlazorCleanShop.Web/Data/shop.db
+/src/BlazorCleanShop.Web/Data/shop.db-shm
+/src/BlazorCleanShop.Web/Data/shop.db-wal
 
 # Business Intelligence projects
 *.rdl.data

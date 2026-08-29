@@ -48,6 +48,8 @@
 | [0009](0009-separate-major-dependency-updates.md) | major 更新を月次グループから分離する | 承認済み |
 | [0010](0010-use-web-host-with-api-endpoint-library.md) | Web を実行ホストとし Api をエンドポイント定義ライブラリとして残す | 承認済み |
 | [0011](0011-generate-identity-sqlite-locally.md) | Identity 用 SQLite DB をマイグレーションからローカル生成する | 承認済み |
+| [0012](0012-use-shopify-as-reference-model.md) | Shopify を基本購入フローの参照モデルとする | 承認済み |
+| [0013](0013-separate-identity-and-shopping-storage.md) | Identity と Shopping の永続化を分離する | 承認済み |
 
 ## テンプレート
 
