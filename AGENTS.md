@@ -4,6 +4,11 @@
 
 プログラミング学習用のデモショッピングサイト。
 
+基本購入フローはShopifyを仕様ではなく参照モデルとして簡略化する。用語は
+[`CONTEXT.md`](CONTEXT.md)、ビジネスルールは
+[`docs/basic-purchase-flow.md`](docs/basic-purchase-flow.md)、選択理由は
+[ADR-0012](docs/adr/0012-use-shopify-as-reference-model.md) を参照。
+
 ### 学習の主目的
 
 1. **デザインパターン** — クリーンアーキテクチャ、軽量DDD、Repositoryパターン等の実践
@@ -25,8 +30,9 @@
 - **フレームワーク**: ASP.NET Core Blazor Web App
 - **レンダリングモード**: Interactive Server
 - **ORM**: Entity Framework Core 10
-- **DB**: SQLite（開発用。Identity DB は Git 管理せず、マイグレーションから
-  ローカル生成する）— [ADR-0011](docs/adr/0011-generate-identity-sqlite-locally.md)
+- **DB**: SQLite（開発用。Identity と Shopping は別DBとし、Git 管理せずマイグレーションから
+  ローカル生成する）— [ADR-0011](docs/adr/0011-generate-identity-sqlite-locally.md)、
+  [ADR-0013](docs/adr/0013-separate-identity-and-shopping-storage.md)
 - **テスト**: xUnit v3 (`xunit.v3.mtp-v2`) + Moq — Microsoft Testing Platform v2
 - **API仕様**: Microsoft.AspNetCore.OpenApi + Scalar
 
@@ -119,7 +125,7 @@ Blazor から同じホストの API へ自己 HTTP 通信は行わない。
 
 - **Entity**: ビジネスルールを持つ。貧血モデル（ただのデータ入れ物）にしない
   - ファクトリメソッド（`Order.Create()`）で生成ルールをEntity自身が持つ
-  - 状態変更もEntity内のメソッドで行う（`order.Cancel()`）
+  - 状態変更もEntity内のメソッドで行う（`cart.ChangeQuantity()`）
 - **Value Object**: 識別子を持たず値で等価判定。C# の `record` で実装
   - 例: `Money`, `Address`, `Email` など、primitiveをそのまま使わない
 - **Repository インターフェース**: `IOrderRepository` など。実装はInfrastructure層
@@ -136,7 +142,7 @@ Blazor から同じホストの API へ自己 HTTP 通信は行わない。
 ### Infrastructure層（BlazorCleanShop.Infrastructure）
 
 - **Repository 実装**: EF Core を使った `IOrderRepository` の実装
-- **DbContext**: EF Core の `AppDbContext`
+- **DbContext**: EF Core の `ShoppingDbContext`。Identity用の`ApplicationDbContext`とは分離する
 - **マッピング設定**: Entity ↔ DB テーブルの設定
 
 ### Minimal API
