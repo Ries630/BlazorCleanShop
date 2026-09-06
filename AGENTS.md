@@ -9,13 +9,7 @@
 [`docs/basic-purchase-flow.md`](docs/basic-purchase-flow.md)、選択理由は
 [ADR-0012](docs/adr/0012-use-shopify-as-reference-model.md) を参照。
 
-### 学習の主目的
-
-1. **デザインパターン** — クリーンアーキテクチャ、軽量DDD、Repositoryパターン等の実践
-2. **API設計** — Minimal APIs + OpenAPI仕様によるRESTful API設計
-3. **ユニットテスト** — xUnit v3 + Moq によるTDD
-4. **GitHub活用** — Issue駆動の開発、PR運用、CI/CD（GitHub Actions）
-5. **AIツール活用** — コーディングエージェント、GitHub Copilot（無料版）の併用
+学習対象は設計パターン、API 設計、TDD、Issue・PR と CI/CD、エージェントと GitHub Copilot の併用。
 
 ## エージェント向け指示の管理
 
@@ -84,23 +78,7 @@ Web（実行ホスト）→ Api, Application, Infrastructure
 Tests         → テスト対象のプロジェクトを参照
 ```
 
-### 通信フロー
-
-```
-Browser → SignalR → Blazor Component → Application Service → Domain
-外部クライアント → HTTP → Minimal API → Application Service → Domain
-```
-
-Blazor Component と Minimal API は同一プロセス内の独立した入力アダプターとする。
-Blazor から同じホストの API へ自己 HTTP 通信は行わない。
-
-## 採用するデザインパターン
-
-- **Repository パターン** — Domain層にインターフェース、Infrastructure層に実装
-- **Entity / Value Object** — DDDの軽量採用。識別子を持つものはEntity、持たないものはValue Object
-- **ユースケース層の分離** — Application層にビジネスロジックを集約
-- **DI（依存性注入）** — ASP.NET Core 組み込みDIを活用、依存性逆転の原則
-- **TDD** — ドメイン層・ユースケース層を中心にxUnit v3 + Moqでテスト
+Blazor と Minimal API は独立した入力アダプターとして Application を直接呼ぶ。Blazor から同じホストの API への自己 HTTP 通信は行わない。
 
 ## 意図的に採用しないパターン（過剰複雑化の回避）
 
@@ -119,45 +97,13 @@ Blazor から同じホストの API へ自己 HTTP 通信は行わない。
 - 注文機能
 - （認証はIdentityテンプレートで最小限）
 
-## レイヤー別の責務と構成要素
+## レイヤーの責務
 
-### Domain層（BlazorCleanShop.Domain）
-
-- **Entity**: ビジネスルールを持つ。貧血モデル（ただのデータ入れ物）にしない
-  - ファクトリメソッド（`Order.Create()`）で生成ルールをEntity自身が持つ
-  - 状態変更もEntity内のメソッドで行う（`cart.ChangeQuantity()`）
-- **Value Object**: 識別子を持たず値で等価判定。C# の `record` で実装
-  - 例: `Money`, `Address`, `Email` など、primitiveをそのまま使わない
-- **Repository インターフェース**: `IOrderRepository` など。実装はInfrastructure層
-- **DomainException**: ドメイン固有の例外
-
-### Application層（BlazorCleanShop.Application）
-
-- **Service（ユースケース）**: ビジネスロジックのオーケストレーション
-  - 例: `OrderService.CreateOrder()` — リポジトリ呼び出し + Entityのファクトリメソッド呼び出し
-- **DTO**: 層の境界をまたぐデータ運搬用。ロジックなし
-  - 例: `OrderDto` — UIに返すためのフラットなデータ構造
-  - Entity ≠ DTO を厳守する
-
-### Infrastructure層（BlazorCleanShop.Infrastructure）
-
-- **Repository 実装**: EF Core を使った `IOrderRepository` の実装
-- **DbContext**: EF Core の `ShoppingDbContext`。Identity用の`ApplicationDbContext`とは分離する
-- **マッピング設定**: Entity ↔ DB テーブルの設定
-
-### Minimal API
-
-- **Minimal APIs**: エンドポイント定義（.NET 10 推奨スタイル）
-- Application層のServiceをDIで受け取り、HTTPリクエストを橋渡しする
-- **API仕様**: Microsoft.AspNetCore.OpenApi + Scalar でOpenAPIドキュメントを自動生成
-- XMLドキュメントコメントがそのままAPI仕様書に反映される
-- エンドポイントは `BlazorCleanShop.Api` に置き、実行時の構成は `BlazorCleanShop.Web` に置く
-
-### Web層（BlazorCleanShop.Web）
-
-- Blazor Web App（Interactive Server モード）
-- 空テンプレート（`-e`）から作成、デフォルトの Bootstrap は使用しない
-- Blazor ComponentはApplication層のServiceを直接DIする
+- **Domain**: Entity のファクトリとメソッドに生成・状態変更のルールを置く。Value Object は値で等価判定する C# の `record`。Repository インターフェースと DomainException もここに置く。
+- **Application**: Service がユースケースを調整し、境界のデータはロジックを持たない DTO で渡す。Entity を DTO として返さない。
+- **Infrastructure**: EF Core の Repository、マッピング、ShoppingDbContext。Identity の ApplicationDbContext とは分離する。
+- **Api**: Application の Service を DI して HTTP 入力を橋渡しする。実行時構成は Web に置く。
+- **Web**: Interactive Server の Blazor UI と唯一のホスト。Application を直接 DI する。空テンプレートを使い、Bootstrap は導入しない。
 
 ## UI方針
 
@@ -226,29 +172,13 @@ API 実装・仕様生成・ドキュメント UI の選択は
 - **I/Oインターフェースの置き場所を守る**: ファイル出力・外部APIクライアント等のインターフェースはApplication層に、実装はInfrastructure層に置く
 - **新しいエントリーポイントはプロジェクト追加で対応**: Application層を共通基盤として、新たなホスト（Batch、外部連携）を足すだけで拡張できる構成を維持する
 
-### 将来追加するプロジェクトのイメージ
-
-```
-src/
-├── BlazorCleanShop.Batch/            # コンソールアプリ（マイクロバッチ、ファイル連携）
-└── BlazorCleanShop.ExternalApi/      # 外部API連携クライアント
-```
-
-いずれも Application層の既存Serviceを呼び出す形で実装する。
-
 ## Codexレビュー指摘への応答
 
-- Codex のレビューコメントへの返信で `@codex` がメンションされた場合、明示的な修正依頼が
-  なければ、コードを変更せずレビュー指摘への対応状況を再判定する
-- コードが修正されている場合は、現在の PR head を確認し、指摘した問題が解消されたかを
-  判定する
-- 説明だけが返信されている場合は、コード・Issue・リポジトリの規範と照合し、その説明が
-  妥当かを判定する
-- 結論は `解消` / `未解消` / `説明妥当` / `説明不十分` のいずれかで、日本語で根拠を添える
-- 判定結果と根拠は同じレビュースレッドへ返信せず、Codex GitHub 連携が表示するタスクの
-  最終報告に記載する
-- `解消` または `説明妥当` と判定した場合だけ Resolve し、`未解消` または `説明不十分` の
-  場合は Resolve しない
+Codex のレビューへの返信で `@codex` がメンションされた場合、明示的な修正依頼がなければコードを変更せず再判定する。
+
+- 現在の PR head、指摘、返信、Issue、リポジトリ規範を照合し、修正の解消状況または説明の妥当性を確認する。
+- 結論は `解消` / `未解消` / `説明妥当` / `説明不十分`。日本語の根拠とともに Codex GitHub 連携のタスク最終報告へ記載し、同じレビュースレッドには返信しない。
+- `解消` / `説明妥当` の場合だけ Resolve する。
 
 ## Code Review Rules
 
